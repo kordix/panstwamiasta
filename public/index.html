@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+    <style>
+        input {
+            width: 120px;
+        }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+<body>
+
+    <div id="app" class="container">
+
+
+
+
+
+        <h1>Państwa miasta</h1>
+
+        <button @click="losuj" v-if="!litera && yourplayer && anotherplayer">Losuj literę</button>
+
+        <h2 v-if="litera">Litera: {{litera.toUpperCase()}}</h2>
+
+        <br><br>
+
+        <!-- <button @click="emituj">Emituj</button> -->
+
+        <div style="display:flex">
+
+
+            <div style="border-right:1px black solid;padding-right:10px">
+                <button @click="choosePlayer('player1')" v-if="!yourplayer && anotherplayer != 'player1'">WYBIERZ STÓŁ
+                    PLAYER 1</button>
+                <p v-if="yourplayer == 'player1'">To jest twój stół</p>
+                <p v-if="anotherplayer == 'player1'">To jest stół twojego przeciwnika</p>
+                <table>
+                    <tr>
+                        <td>
+                            Państwo
+                        </td>
+                        <td>
+                            Miasto
+                        </td>
+                        <td>
+                            Rzecz
+                        </td>
+                        <td>
+                            Zawód
+                        </td>
+                        <td>
+                            Potrawa
+                        </td>
+                    </tr>
+            
+
+                    <tr>
+                        <td v-for="elem in guesses"> <input type="text" v-model="dane[elem]"
+                                :disabled="yourplayer=='player2' || endgame || applied"> <span v-if="endgame">{{results[elem]}}</span></td>
+                    </tr>
+
+
+                    <!-- {{dane.country}} -->
+
+
+                </table>
+
+                <button @click="applyPlayer1"
+                    v-if="yourplayer=='player1' && litera && anotherplayer && !applied && !endgame">Zatwierdź</button>
+            </div>
+
+            <div style="padding-left:10px">
+                <button @click="choosePlayer('player2')" v-if="!yourplayer && anotherplayer != 'player2'">WYBIERZ STÓŁ
+                    PLAYER 2</button>
+                <p v-if="yourplayer == 'player2'">To jest twój stół</p>
+                <p v-if="yourplayer =='player1' && anotherplayer == ''">Tutaj jest miejsca dla twojego przeciwnika. Stół
+                    jest pusty.
+                </p>
+                <p v-if="anotherplayer == 'player2' ">Tutaj usiadł twój przeciwnik</p>
+                <table>
+                    <tr>
+                        <td>
+                            Państwo
+                        </td>
+                        <td>
+                            Miasto
+                        </td>
+                        <td>
+                            Rzecz
+                        </td>
+                        <td>
+                            Zawód
+                        </td>
+                        <td>
+                            Potrawa
+                        </td>
+                    </tr>
+                    <tr>
+                        <td v-for="elem in guesses"> <input type="text" v-model="dane2[elem]"
+                                :disabled="yourplayer=='player1' || endgame || applied"> <span v-if="endgame">{{results2[elem]}}</span></td>
+
+                    </tr>
+
+                    <!-- {{dane.country}} -->
+
+
+                </table>
+                <button @click="applyPlayer2"
+                    v-if="yourplayer=='player2' && litera && anotherplayer && !applied && !endgame">Zatwierdź</button>
+
+            </div>
+
+        </div>
+
+        <br><br>
+
+        <p>Timer:{{timer}}</p>
+
+        <p v-if="endgame"><b>KONIEC GRY</b></p>
+
+    </div>
+
+
+
+
+    <!-- Import Vue and the Composition API -->
+    <script src="https://unpkg.com/vue@next"></script>
+
+
+    <script>
+        let socket = io();
+        const { ref, reactive, createApp, onMounted } = Vue;
+        createApp({
+
+            setup() {
+                let results = reactive({});
+                let results2 = reactive({});
+                let guesses = ['country', 'city', 'item', 'vocation', 'food'];
+
+                let pipa = ref('fasfasfds');
+                let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'w', 'z', 'q', 'x', 'v'];
+
+                let litera = ref('');
+
+                let applied = ref(false);
+
+                let dane = reactive({})
+                let dane2 = reactive({ country: '' })
+
+                let anotherplayer = ref('');
+                let yourplayer = ref('');
+                function emituj() {
+                    socket.emit('test', { country: 'dupa' });
+                }
+
+                function emituj2() {
+                    socket.emit('test2', 'lufa');
+                }
+
+                function losuj() {
+                    console.log('losuj');
+                    let losowe = Math.ceil(Math.random() * alphabet.length);
+                    litera.value = alphabet.slice(losowe, losowe + 1)[0];
+                    socket.emit('litera', litera.value);
+
+                }
+
+                function applyPlayer1() {
+                    // socket.emit('applyPlayer1', dane);
+                    applied.value = true;
+                    setTimer(15);
+                    socket.emit('setTimer');
+
+                }
+
+                function applyPlayer2() {
+                    applied.value = true;
+                    setTimer(15);
+                    socket.emit('setTimer');
+                }
+
+
+
+                let timer = ref(2);
+                let endgame = ref(false);
+
+                function setTimer(time) {
+
+                    setInterval(function () {
+                        if (endgame.value == false) {
+                            if (timer.value > 0) {
+                                timer.value = timer.value - 1;
+                            } else {
+                                endgame.value = true;
+                                console.log(endgame.value);
+                                if (yourplayer.value == 'player1') {
+                                    console.log('KURNA PUSZCZA TO NIE NI PUSZCZZ');
+                                    socket.emit('applyPlayer1', dane);
+                                }
+                                if (yourplayer.value == 'player2') {
+                                    socket.emit('applyPlayer2', dane2);
+                                }
+
+                                setTimeout(() => {
+                                    calculatePoints();
+                                }, 300)
+                            }
+                        }
+                    }, 1000)
+                }
+
+                function calculatePoints() {
+                    console.log(2);
+                    for (let i = 0; i < guesses.length; i++) {
+                        let elem = guesses[i];
+                        if (!dane[elem]) {
+                            results[elem] = 0;
+                        } else {
+                            results[elem] = 15
+                        }
+
+                    }
+
+                    for (let i = 0; i < guesses.length; i++) {
+                        let elem = guesses[i];
+                        if (!dane2[elem]) {
+                            results2[elem] = 0;
+                        } else {
+                            results2[elem] = 15
+                        }
+
+                    }
+                }
+
+
+
+
+
+                onMounted(() => {
+                    console.log('Component mounted')
+
+                    socket.on('test', (data) => {
+                        console.log('test działą');
+                        dane2.country = data.country
+                    });
+
+                    socket.on('test2', (data) => {
+                        console.log('test2 działa');
+                        pipa.value = data
+                    });
+
+                    socket.on('litera', (data) => {
+                        litera.value = data
+                    });
+
+                    socket.on('setTimer', (data) => {
+                        console.log('odbiera setTimer');
+                        setTimer(15);
+                    });
+
+                    socket.on('choseplayer', (player) => {
+                        console.log('choseplayer nasłuchał');
+                        anotherplayer.value = player;
+                    })
+
+                    socket.on('applyPlayer1', (otrzymanedane) => {
+                        console.log(1);
+                        console.log('applyPlayer1 nasłuchał');
+                        console.log(otrzymanedane);
+                        dane.country = otrzymanedane.country;
+                        dane.city = otrzymanedane.city;
+                        dane.item = otrzymanedane.item;
+                        dane.food = otrzymanedane.food;
+                        dane.vocation = otrzymanedane.vocation;
+                    })
+
+                    socket.on('applyPlayer2', (otrzymanedane) => {
+                        console.log('applyPlayer2 nasłuchał');
+                        console.log(otrzymanedane);
+                        dane2.country = otrzymanedane.country;
+                        dane2.city = otrzymanedane.city;
+                        dane2.item = otrzymanedane.item;
+                        dane2.food = otrzymanedane.food;
+                        dane2.vocation = otrzymanedane.vocation;
+                    })
+
+                })
+
+                function choosePlayer(player) {
+                    console.log('choseplayer puścił');
+                    yourplayer.value = player;
+                    socket.emit('choseplayer', player);
+                }
+
+
+
+
+                return {
+                    pipa, dane, dane2, emituj, emituj2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer1, applyPlayer2, timer, applied, endgame, guesses, results, results2
+                }
+            }
+
+        }).mount('#app')
+
+
+
+
+    </script>
+</body>
+
+</html>
