@@ -64,12 +64,19 @@
                         <td>
                             Potrawa
                         </td>
+                        <td>
+                            Roślina
+                        </td>
+                        <td>
+                            Zwierze
+                        </td>
                     </tr>
-            
+
 
                     <tr>
                         <td v-for="elem in guesses"> <input type="text" v-model="dane[elem]"
-                                :disabled="yourplayer=='player2' || endgame || applied"> <span v-if="endgame">{{results[elem]}}</span></td>
+                                :disabled="yourplayer=='player2' || endgame || applied"> <span
+                                v-if="endgame">{{results[elem]}}</span></td>
                     </tr>
 
 
@@ -107,10 +114,17 @@
                         <td>
                             Potrawa
                         </td>
+                        <td>
+                            Roślina
+                        </td>
+                        <td>
+                            Zwierze
+                        </td>
                     </tr>
                     <tr>
                         <td v-for="elem in guesses"> <input type="text" v-model="dane2[elem]"
-                                :disabled="yourplayer=='player1' || endgame || applied"> <span v-if="endgame">{{results2[elem]}}</span></td>
+                                :disabled="yourplayer=='player1' || endgame || applied"> <span
+                                v-if="endgame">{{results2[elem]}}</span></td>
 
                     </tr>
 
@@ -148,7 +162,7 @@
             setup() {
                 let results = reactive({});
                 let results2 = reactive({});
-                let guesses = ['country', 'city', 'item', 'vocation', 'food'];
+                let guesses = ['country', 'city', 'item', 'vocation', 'food', 'plant', 'animal'];
 
                 let pipa = ref('fasfasfds');
                 let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'w', 'z', 'q', 'x', 'v'];
@@ -226,10 +240,13 @@
                     console.log(2);
                     for (let i = 0; i < guesses.length; i++) {
                         let elem = guesses[i];
+                        results[elem] = 0;
+                        results2[elem] = 0;
                         if (!dane[elem]) {
-                            results[elem] = 0;
+                            results[elem] += 0;
+                            results2[elem] += 5;
                         } else {
-                            results[elem] = 10
+                            results[elem] += 10
                         }
 
                     }
@@ -237,9 +254,10 @@
                     for (let i = 0; i < guesses.length; i++) {
                         let elem = guesses[i];
                         if (!dane2[elem]) {
-                            results2[elem] = 0;
+                            results2[elem] += 0;
+                            results[elem] += 5;
                         } else {
-                            results2[elem] = 10
+                            results2[elem] += 10
                         }
 
                     }
