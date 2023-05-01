@@ -61,9 +61,7 @@
                         <td>
                             Zawód
                         </td>
-                        <td>
-                            Potrawa
-                        </td>
+
                         <td>
                             Roślina
                         </td>
@@ -111,9 +109,7 @@
                         <td>
                             Zawód
                         </td>
-                        <td>
-                            Potrawa
-                        </td>
+
                         <td>
                             Roślina
                         </td>
@@ -162,7 +158,7 @@
             setup() {
                 let results = reactive({});
                 let results2 = reactive({});
-                let guesses = ['country', 'city', 'item', 'vocation', 'food', 'plant', 'animal'];
+                let guesses = ['country', 'city', 'item', 'vocation', 'plant', 'animal'];
 
                 let pipa = ref('fasfasfds');
                 let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'w', 'z', 'q', 'x', 'v'];
@@ -195,20 +191,20 @@
                 function applyPlayer1() {
                     // socket.emit('applyPlayer1', dane);
                     applied.value = true;
-                    setTimer(15);
+                    setTimer(99);
                     socket.emit('setTimer');
 
                 }
 
                 function applyPlayer2() {
                     applied.value = true;
-                    setTimer(15);
+                    setTimer(99);
                     socket.emit('setTimer');
                 }
 
 
 
-                let timer = ref(15);
+                let timer = ref(3);
                 let endgame = ref(false);
 
                 function setTimer(time) {
@@ -230,7 +226,7 @@
 
                                 setTimeout(() => {
                                     calculatePoints();
-                                }, 300)
+                                }, 1000)
                             }
                         }
                     }, 1000)
@@ -246,7 +242,12 @@
                             results[elem] += 0;
                             results2[elem] += 5;
                         } else {
-                            results[elem] += 10
+                            if (dane[elem] == dane2[elem]) {
+                                results[elem] += 5
+
+                            } else {
+                                results[elem] += 10
+                            }
                         }
 
                     }
@@ -257,7 +258,12 @@
                             results2[elem] += 0;
                             results[elem] += 5;
                         } else {
-                            results2[elem] += 10
+                            if (dane[elem] == dane2[elem]) {
+                                results2[elem] += 5
+
+                            } else {
+                                results2[elem] += 10
+                            }
                         }
 
                     }
@@ -301,8 +307,12 @@
                         dane.country = otrzymanedane.country;
                         dane.city = otrzymanedane.city;
                         dane.item = otrzymanedane.item;
-                        dane.food = otrzymanedane.food;
+                        // dane.food = otrzymanedane.food;
                         dane.vocation = otrzymanedane.vocation;
+                        dane.plant = otrzymanedane.plant;
+                        dane.animal = otrzymanedane.animal;
+
+
                     })
 
                     socket.on('applyPlayer2', (otrzymanedane) => {
@@ -311,8 +321,10 @@
                         dane2.country = otrzymanedane.country;
                         dane2.city = otrzymanedane.city;
                         dane2.item = otrzymanedane.item;
-                        dane2.food = otrzymanedane.food;
+                        // dane2.food = otrzymanedane.food;
                         dane2.vocation = otrzymanedane.vocation;
+                        dane.plant = otrzymanedane.plant;
+                        dane.animal = otrzymanedane.animal;
                     })
 
                 })
