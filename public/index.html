@@ -242,7 +242,8 @@
                             results[elem] += 0;
                             results2[elem] += 5;
                         } else {
-                            if (dane[elem].toLowerCase() == dane2[elem].toLowerCase() ) {
+                            dane[elem] = dane[elem].toLowerCase();
+                            if (dane[elem] == dane2[elem]) {
                                 results[elem] += 5
 
                             } else {
@@ -258,7 +259,9 @@
                             results2[elem] += 0;
                             results[elem] += 5;
                         } else {
-                            if (dane[elem].toLowerCase() == dane2[elem].toLowerCase() ) {
+                            dane2[elem] = dane2[elem].toLowerCase();
+
+                            if (dane[elem] == dane2[elem] ) {
                                 results2[elem] += 5
 
                             } else {
