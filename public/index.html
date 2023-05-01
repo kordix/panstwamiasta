@@ -234,6 +234,20 @@
 
                 function calculatePoints() {
                     console.log(2);
+
+                    for (let i = 0; i < guesses.length; i++) {
+                        let elem = guesses[i];
+
+                        if (dane[elem]) {
+                            dane[elem] = dane[elem].toLowerCase();
+                        }
+
+                        if (dane2[elem]) {
+                            dane2[elem] = dane2[elem].toLowerCase();
+                        }
+
+                    }
+
                     for (let i = 0; i < guesses.length; i++) {
                         let elem = guesses[i];
                         results[elem] = 0;
@@ -242,7 +256,7 @@
                             results[elem] += 0;
                             results2[elem] += 5;
                         } else {
-                            dane[elem] = dane[elem].toLowerCase();
+
                             if (dane[elem] == dane2[elem]) {
                                 results[elem] += 5
 
@@ -259,9 +273,7 @@
                             results2[elem] += 0;
                             results[elem] += 5;
                         } else {
-                            dane2[elem] = dane2[elem].toLowerCase();
-
-                            if (dane[elem] == dane2[elem] ) {
+                            if (dane[elem] == dane2[elem]) {
                                 results2[elem] += 5
 
                             } else {
