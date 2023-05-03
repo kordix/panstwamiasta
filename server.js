@@ -10,8 +10,48 @@ const io = new Server(server);
 //     res.sendFile(__dirname + '/index.html');
 // });
 
+let connectcounter = 0;
 
 io.on('connection', (socket) => {
+
+    connectcounter++;
+    console.log(connectcounter);
+
+
+
+
+
+
+
+
+
+
+    const io = require('socket.io')();
+
+    // console.log(`Number of connected clients: ${Object.keys(io.sockets.connected).length}`);
+
+    // socket.emit('connectedClients', connectcounter);
+
+    socket.on('connectedClientClient', () => {
+        console.log('nasłuchuje i emituje po stronie serwera');
+        console.log('clientclient', connectcounter);
+        // socket.emit('connectedClient', connectcounter);
+
+        socket.emit('connectedClients', connectcounter);
+
+        socket.broadcast.emit('connectedClients', connectcounter);
+    });
+
+
+    socket.on('disconnect', () => {
+        connectcounter -= 1;
+        console.log(connectcounter);
+
+        socket.emit('connectedClients', connectcounter);
+        socket.broadcast.emit('connectedClients', connectcounter);
+
+
+    });
 
     socket.on('choseplayer', (player) => {
         socket.broadcast.emit('choseplayer', player);
@@ -42,6 +82,11 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('setTimer', dane);
     });
 
+    socket.on('nextround', (dane) => {
+        socket.broadcast.emit('nextround', dane);
+    });
+
+
 
 });
 
@@ -51,5 +96,8 @@ server.listen(3001, () => {
 
 
 
+app.get('/connectcounter', function (req, res) {
+    res.send(`${connectcounter}`);
 
+});
 

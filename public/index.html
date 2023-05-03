@@ -26,8 +26,10 @@
     <div id="app" class="container">
 
 
+        {{connectedClients}}
 
-
+        <div v-if="connectedClients == 1">Drugi gracz niech odpali stronę
+            stronę</button></div>
 
         <h1>Państwa miasta</h1>
 
@@ -39,107 +41,136 @@
 
         <!-- <button @click="emituj">Emituj</button> -->
 
-        <div style="display:flex">
+
+        <div v-show="connectedClients > 1">
+
+            <div style="display:flex">
 
 
-            <div style="border-right:1px black solid;padding-right:10px">
-                <button @click="choosePlayer('player1')" v-if="!yourplayer && anotherplayer != 'player1'">WYBIERZ STÓŁ
-                    PLAYER 1</button>
-                <p v-if="yourplayer == 'player1'">To jest twój stół</p>
-                <p v-if="anotherplayer == 'player1'">To jest stół twojego przeciwnika</p>
-                <table>
-                    <tr>
-                        <td>
-                            Państwo
-                        </td>
-                        <td>
-                            Miasto
-                        </td>
-                        <td>
-                            Rzecz
-                        </td>
-                        <td>
-                            Zawód
-                        </td>
+                <div style="border-right:1px black solid;padding-right:10px">
+                    <button @click="choosePlayer('player1')" v-if="!yourplayer && anotherplayer != 'player1'">WYBIERZ
+                        STÓŁ
+                        PLAYER 1</button>
+                    <p v-if="yourplayer == 'player1'">To jest twój stół</p>
+                    <p v-if="anotherplayer == 'player1'">To jest stół twojego przeciwnika</p>
+                    <table>
+                        <tr>
+                            <td>
+                                Państwo
+                            </td>
+                            <td>
+                                Miasto
+                            </td>
+                            <td>
+                                Rzecz
+                            </td>
+                            <td>
+                                Zawód
+                            </td>
 
-                        <td>
-                            Roślina
-                        </td>
-                        <td>
-                            Zwierze
-                        </td>
-                    </tr>
+                            <td>
+                                Roślina
+                            </td>
+                            <td>
+                                Zwierze
+                            </td>
+                        </tr>
 
-
-                    <tr>
-                        <td v-for="elem in guesses"> <input type="text" v-model="dane[elem]"
-                                :disabled="yourplayer=='player2' || endgame || applied"> <span
-                                v-if="endgame">{{results[elem]}}</span></td>
-                    </tr>
-
-
-                    <!-- {{dane.country}} -->
+                        <tr v-for="(pipa,index) in archive1results" style="font-size:12px">
+                            <td v-for="elem in guesses"> <span>{{archive1dane[index][elem] }} ({{pipa[elem]}})</span>
+                            </td>
+                        </tr>
 
 
-                </table>
+                        <tr>
+                            <td v-for="elem in guesses"> <input type="text" v-model="dane[elem]"
+                                    :disabled="yourplayer=='player2' || endgame || applied"> <span
+                                    v-if="endgame">{{results[elem]}}</span></td>
+                        </tr>
 
-                <button @click="applyPlayer1"
-                    v-if="yourplayer=='player1' && litera && anotherplayer && !applied && !endgame">Zatwierdź</button>
+
+                        <!-- {{dane.country}} -->
+
+
+                    </table>
+
+                    <button @click="applyPlayer1"
+                        v-if="yourplayer=='player1' && litera && anotherplayer && !applied && !endgame">Zatwierdź</button>
+                </div>
+
+                <div style="padding-left:10px">
+                    <button @click="choosePlayer('player2')" v-if="!yourplayer && anotherplayer != 'player2'">WYBIERZ
+                        STÓŁ
+                        PLAYER 2</button>
+                    <p v-if="yourplayer == 'player2'">To jest twój stół</p>
+                    <p v-if="yourplayer =='player1' && anotherplayer == ''">Tutaj jest miejsca dla twojego przeciwnika.
+                        Stół
+                        jest pusty.
+                    </p>
+                    <p v-if="anotherplayer == 'player2' ">Tutaj usiadł twój przeciwnik</p>
+                    <table>
+                        <tr>
+                            <td>
+                                Państwo
+                            </td>
+                            <td>
+                                Miasto
+                            </td>
+                            <td>
+                                Rzecz
+                            </td>
+                            <td>
+                                Zawód
+                            </td>
+
+                            <td>
+                                Roślina
+                            </td>
+                            <td>
+                                Zwierze
+                            </td>
+                        </tr>
+                        <tr v-for="(pipa,index) in archive2results" style="font-size:12px">
+                            <td v-for="elem in guesses"> <span>{{archive2dane[index][elem] }} ({{pipa[elem]}})</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td v-for="elem in guesses"> <input type="text" v-model="dane2[elem]"
+                                    :disabled="yourplayer=='player1' || endgame || applied"> <span
+                                    v-if="endgame">{{results2[elem]}}</span></td>
+
+                        </tr>
+
+                        <!-- {{dane.country}} -->
+
+
+                    </table>
+                    <button @click="applyPlayer2"
+                        v-if="yourplayer=='player2' && litera && anotherplayer && !applied && !endgame">Zatwierdź</button>
+
+                </div>
+
             </div>
 
-            <div style="padding-left:10px">
-                <button @click="choosePlayer('player2')" v-if="!yourplayer && anotherplayer != 'player2'">WYBIERZ STÓŁ
-                    PLAYER 2</button>
-                <p v-if="yourplayer == 'player2'">To jest twój stół</p>
-                <p v-if="yourplayer =='player1' && anotherplayer == ''">Tutaj jest miejsca dla twojego przeciwnika. Stół
-                    jest pusty.
-                </p>
-                <p v-if="anotherplayer == 'player2' ">Tutaj usiadł twój przeciwnik</p>
-                <table>
-                    <tr>
-                        <td>
-                            Państwo
-                        </td>
-                        <td>
-                            Miasto
-                        </td>
-                        <td>
-                            Rzecz
-                        </td>
-                        <td>
-                            Zawód
-                        </td>
+            <br><br>
 
-                        <td>
-                            Roślina
-                        </td>
-                        <td>
-                            Zwierze
-                        </td>
-                    </tr>
-                    <tr>
-                        <td v-for="elem in guesses"> <input type="text" v-model="dane2[elem]"
-                                :disabled="yourplayer=='player1' || endgame || applied"> <span
-                                v-if="endgame">{{results2[elem]}}</span></td>
+            <p>Timer:{{timer}}</p>
 
-                    </tr>
+            <p v-if="endgame"><b>KONIEC GRY</b></p>
 
-                    <!-- {{dane.country}} -->
+            <button @click="nextRoundEmit" v-if="endgame">Następna runda</button>
+
+            <p>To do:</p>
+            <ul>
+                <li>Wiele odpowidzie</li>
+                <li>Dynamiczne kategorie</li>
+                <li>Posprzątanie</li>
+                <li>Zmienna ilość graczy</li>
 
 
-                </table>
-                <button @click="applyPlayer2"
-                    v-if="yourplayer=='player2' && litera && anotherplayer && !applied && !endgame">Zatwierdź</button>
-
-            </div>
+            </ul>
 
         </div>
-
-        <br><br>
-
-        <p>Timer:{{timer}}</p>
-
-        <p v-if="endgame"><b>KONIEC GRY</b></p>
 
     </div>
 
@@ -152,26 +183,78 @@
 
     <script>
         let socket = io();
+
+        socket.on('connect', function () {
+            console.log('connectedClientClient');
+            // socket.emit('connectedClientClient');
+        });
+        socket.on('disconnect', function () {
+            console.log('disconnected');
+        });
+
         const { ref, reactive, createApp, onMounted } = Vue;
         createApp({
 
             setup() {
+
+                let archive1results = reactive([]);
+                let archive2results = reactive([]);
+
+                let archive1dane = reactive([]);
+                let archive2dane = reactive([]);
+
+
                 let results = reactive({});
                 let results2 = reactive({});
-                let guesses = ['country', 'city', 'item', 'vocation', 'plant', 'animal'];
-
-                let pipa = ref('fasfasfds');
-                let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'w', 'z', 'q', 'x', 'v'];
-
-                let litera = ref('');
-
-                let applied = ref(false);
 
                 let dane = reactive({})
-                let dane2 = reactive({ country: '' })
+                let dane2 = reactive({})
 
+
+                function nextRoundEmit() {
+                    nextRound();
+                    socket.emit('nextround');
+                }
+
+                function nextRound() {
+
+                    archive1results.push(results);
+                    archive2results.push(results2);
+                    archive1dane.push({ ...dane });
+                    archive2dane.push({ ...dane2 });
+
+                    resetObject(dane);
+                    resetObject(dane2);
+
+
+                    clearInterval(myInterval);
+                    endgame.value = false;
+                    applied.value = false;
+                    timer.value = 15;
+                    litera.value = '';
+
+
+                }
+
+                function resetObject(obj) {
+                    Object.assign(obj, ...Object.keys(obj).map(key => ({ [key]: '' })));
+                }
+
+                let guesses = ['country', 'city', 'item', 'vocation', 'plant', 'animal'];
+                
+
+
+                let pipa = ref('fasfasfds');
+                let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'w', 'z', 'q', 'x', 'v', 'sz', 'cz'];
+                let litera = ref('');
+                let applied = ref(false);
                 let anotherplayer = ref('');
                 let yourplayer = ref('');
+                let timer = ref(1);
+                let endgame = ref(false);
+
+
+                let myInterval;
                 function emituj() {
                     socket.emit('test', { country: 'dupa' });
                 }
@@ -181,7 +264,7 @@
                 }
 
                 function losuj() {
-                    console.log('losuj');
+
                     let losowe = Math.ceil(Math.random() * alphabet.length);
                     litera.value = alphabet.slice(losowe, losowe + 1)[0];
                     socket.emit('litera', litera.value);
@@ -204,20 +287,17 @@
 
 
 
-                let timer = ref(15);
-                let endgame = ref(false);
 
                 function setTimer(time) {
 
-                    setInterval(function () {
+                    myInterval = setInterval(function () {
                         if (endgame.value == false) {
                             if (timer.value > 0) {
                                 timer.value = timer.value - 1;
                             } else {
                                 endgame.value = true;
-                                console.log(endgame.value);
+
                                 if (yourplayer.value == 'player1') {
-                                    console.log('KURNA PUSZCZA TO NIE NI PUSZCZZ');
                                     socket.emit('applyPlayer1', dane);
                                 }
                                 if (yourplayer.value == 'player2') {
@@ -233,7 +313,7 @@
                 }
 
                 function calculatePoints() {
-                    console.log(2);
+
 
                     for (let i = 0; i < guesses.length; i++) {
                         let elem = guesses[i];
@@ -287,38 +367,56 @@
 
 
 
-
+                let connectedClients = ref(100);
+                let dupa = 'fsadsdfsfsd';
                 onMounted(() => {
+
+
                     console.log('Component mounted')
 
                     socket.on('test', (data) => {
-                        console.log('test działą');
+
                         dane2.country = data.country
                     });
 
                     socket.on('test2', (data) => {
-                        console.log('test2 działa');
+
                         pipa.value = data
                     });
 
                     socket.on('litera', (data) => {
                         litera.value = data
+
+                        alphabet.splice(alphabet.indexOf(data), 1);
+
+
                     });
 
                     socket.on('setTimer', (data) => {
-                        console.log('odbiera setTimer');
                         setTimer(15);
                     });
 
+
+                    socket.on('nextround', (data) => {
+                        console.log('nasłuchał next round');
+                        nextRound()
+                        // setTimer(15);
+                    });
+
+                    socket.on('connectedClients', (data) => {
+                        console.log('NASŁUCHUJE OCNNECTED CLIENT');
+                        connectedClients.value = data;
+                    })
+
                     socket.on('choseplayer', (player) => {
-                        console.log('choseplayer nasłuchał');
+
                         anotherplayer.value = player;
                     })
 
                     socket.on('applyPlayer1', (otrzymanedane) => {
-                        console.log(1);
-                        console.log('applyPlayer1 nasłuchał');
-                        console.log(otrzymanedane);
+
+
+
                         dane.country = otrzymanedane.country;
                         dane.city = otrzymanedane.city;
                         dane.item = otrzymanedane.item;
@@ -331,8 +429,6 @@
                     })
 
                     socket.on('applyPlayer2', (otrzymanedane) => {
-                        console.log('applyPlayer2 nasłuchał');
-                        console.log(otrzymanedane);
                         dane2.country = otrzymanedane.country;
                         dane2.city = otrzymanedane.city;
                         dane2.item = otrzymanedane.item;
@@ -342,19 +438,25 @@
                         dane2.animal = otrzymanedane.animal;
                     })
 
+                    socket.emit('connectedClientClient');
+
                 })
 
                 function choosePlayer(player) {
-                    console.log('choseplayer puścił');
+
                     yourplayer.value = player;
                     socket.emit('choseplayer', player);
+                }
+
+                function refresh() {
+                    location.reload()
                 }
 
 
 
 
                 return {
-                    pipa, dane, dane2, emituj, emituj2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer1, applyPlayer2, timer, applied, endgame, guesses, results, results2
+                    nextRoundEmit, refresh, connectedClients, dupa, pipa, dane, dane2, emituj, emituj2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer1, applyPlayer2, timer, applied, endgame, guesses, results, results2, nextRound, archive1results, archive2results, archive1dane, archive2dane
                 }
             }
 
