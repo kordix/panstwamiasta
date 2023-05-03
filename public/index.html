@@ -55,25 +55,7 @@
                     <p v-if="anotherplayer == 'player1'">To jest stół twojego przeciwnika</p>
                     <table>
                         <tr>
-                            <td>
-                                Państwo
-                            </td>
-                            <td>
-                                Miasto
-                            </td>
-                            <td>
-                                Rzecz
-                            </td>
-                            <td>
-                                Zawód
-                            </td>
-
-                            <td>
-                                Roślina
-                            </td>
-                            <td>
-                                Zwierze
-                            </td>
+                            <td v-for="elem in guesses">{{elem}}</td>
                         </tr>
 
                         <tr v-for="(pipa,index) in archive1results" style="font-size:12px">
@@ -94,7 +76,7 @@
 
                     </table>
 
-                    <button @click="applyPlayer1"
+                    <button @click="applyPlayer"
                         v-if="yourplayer=='player1' && litera && anotherplayer && !applied && !endgame">Zatwierdź</button>
                 </div>
 
@@ -110,25 +92,7 @@
                     <p v-if="anotherplayer == 'player2' ">Tutaj usiadł twój przeciwnik</p>
                     <table>
                         <tr>
-                            <td>
-                                Państwo
-                            </td>
-                            <td>
-                                Miasto
-                            </td>
-                            <td>
-                                Rzecz
-                            </td>
-                            <td>
-                                Zawód
-                            </td>
-
-                            <td>
-                                Roślina
-                            </td>
-                            <td>
-                                Zwierze
-                            </td>
+                            <td v-for="elem in guesses">{{elem}}</td>
                         </tr>
                         <tr v-for="(pipa,index) in archive2results" style="font-size:12px">
                             <td v-for="elem in guesses"> <span>{{archive2dane[index][elem] }} ({{pipa[elem]}})</span>
@@ -145,7 +109,7 @@
 
 
                     </table>
-                    <button @click="applyPlayer2"
+                    <button @click="applyPlayer"
                         v-if="yourplayer=='player2' && litera && anotherplayer && !applied && !endgame">Zatwierdź</button>
 
                 </div>
@@ -183,7 +147,6 @@
 
     <script type="module">
         import losuj from './losuj.js';
-        import dupa from '/dupa.js';
 
         let socket = io();
 
@@ -201,11 +164,6 @@
             setup() {
 
                 let faja = 'fasfsadfdsa';
-
-                // const { dupa } = dupa;
-
-
-
                 let archive1results = reactive([]);
                 let archive2results = reactive([]);
                 let archive1dane = reactive([]);
@@ -225,7 +183,6 @@
                 let connectedClients = ref(99);
                 let guesses = ['country', 'city', 'item', 'vocation', 'plant', 'animal'];
                 let myInterval;
-
 
 
                 function nextRoundEmit() {
@@ -257,32 +214,15 @@
                     Object.assign(obj, ...Object.keys(obj).map(key => ({ [key]: '' })));
                 }
 
-
-                function emituj() {
-                    socket.emit('test', { country: 'dupa' });
-                }
-
-                function emituj2() {
-                    socket.emit('test2', 'lufa');
-                }
-
-
                 function losuj2() {
                     losuj(alphabet, litera, socket);
                 }
 
-                function applyPlayer1() {
-                    // socket.emit('applyPlayer1', dane);
+                function applyPlayer() {
                     applied.value = true;
                     setTimer(99);
                     socket.emit('setTimer');
 
-                }
-
-                function applyPlayer2() {
-                    applied.value = true;
-                    setTimer(99);
-                    socket.emit('setTimer');
                 }
 
                 function setTimer(time) {
@@ -312,7 +252,7 @@
                 function calculatePoints() {
 
 
-                    for (let i = 0; i < guesses.lengtkh; i++) {
+                    for (let i = 0; i < guesses.length; i++) {
                         let elem = guesses[i];
 
                         if (dane[elem]) {
@@ -427,7 +367,7 @@
 
 
                 return {
-                    losuj2, nextRoundEmit, refresh, connectedClients, dupa, pipa, dane, dane2, emituj, emituj2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer1, applyPlayer2, timer, applied, endgame, guesses, results, results2, nextRound, archive1results, archive2results, archive1dane, archive2dane
+                    losuj2, nextRoundEmit, refresh, connectedClients, pipa, dane, dane2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer, timer, applied, endgame, guesses, results, results2, nextRound, archive1results, archive2results, archive1dane, archive2dane
                 }
             }
 
