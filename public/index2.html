@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+    <style>
+        input {
+            width: 120px;
+        }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+<body>
+
+    <div id="app" class="container">
+
+        {{connectedClients}}
+
+        <!-- <div v-if="connectedClients == 1">Drugi gracz niech odpali stronę</button></div> -->
+
+        <div>
+            <p>siemano {{yourplayer.value}} {{yourplayerindex}}</p>
+
+            <div v-if="!joined">
+                <p>Dołącz do gry</p>
+                <input type="text" v-model="nick" placeholder="wpisz swój nick">
+                <button @click="addPlayerEmit">Dołącz</button>
+            </div>
+
+
+            <p>Lista graczy:</p>
+            <ul>
+                <li v-for="elem in players">{{elem}}</li>
+            </ul>
+
+
+            <button @click="start">Rozpocznij grę</button>
+
+
+            <div v-if="gameStarted">
+                <p>gamestaretd</p>
+                <table>
+                    <tr>
+                        <td v-for="elem in guesses">{{elem}}</td>
+                    </tr>
+                    <tr>
+                        <td v-for="elem in guesses"><input type="text" v-model="dane[elem]"></td>
+                    </tr>
+                </table>
+
+            </div>
+
+            {{dane}}
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Import Vue and the Composition API -->
+    <script src="https://unpkg.com/vue@next"></script>
+
+
+    <script type="module">
+        import losuj from './losuj.js';
+
+        let socket = io();
+
+        socket.on('connect', function () {
+            console.log('connectedClientClient');
+            // socket.emit('connectedClientClient');
+        });
+        socket.on('disconnect', function () {
+            console.log('disconnected');
+        });
+
+        const { ref, reactive, createApp, onMounted } = Vue;
+        createApp({
+
+            setup() {
+
+                let joined = ref(false);
+                let nick = ref('');
+                let yourplayer = ref('');
+                let yourplayerindex = ref(99);
+
+                let players = reactive([]);
+                let guesses = ['country'];
+
+                let currentplayer = '';
+
+                let connectedClients = ref(99);
+
+                let gameStarted = ref(false);
+
+                // let dane = reactive({});
+
+                let dane = reactive({});
+
+
+
+
+
+
+                function addPlayerEmit() {
+                    yourplayer.value = nick;
+
+                    joined.value = true;
+                    socket.emit('addPlayer', nick.value);
+                }
+
+                function start() {
+                    console.log('start');
+                    gameStarted.value = true;
+                }
+
+                onMounted(() => {
+
+                    socket.on('addPlayer', (data) => {
+                        console.log('nasłuchuje addplayer');
+                        players.push(data);
+
+                        yourplayerindex.value = players.indexOf(nick.value);
+                        console.log('yourplayerindex', yourplayerindex);
+                    })
+
+                    socket.on('connectedClients', (data) => {
+                        connectedClients.value = data;
+                    })
+
+
+                })
+
+
+
+                socket.emit('connectedClientClient');
+
+
+                return {
+                    nick, players, addPlayerEmit, yourplayer, joined, connectedClients, start, gameStarted, dane, yourplayerindex, guesses
+                }
+
+
+            }
+
+        }).mount('#app')
+
+
+
+
+    </script>
+</body>
+
+</html>
