@@ -17,7 +17,7 @@
         }
     </style>
 
-    <script src="/socket.io/socket.io.js"></script>
+   
 
 </head>
 
@@ -25,11 +25,15 @@
 
     <div id="app" class="container">
 
-        {{connectedClients}}
+
+
+        <p v-if="connectedClients == 1">{{connectedClients}} Drugi gracz niech odpali stronę</p>
 
         <!-- <div v-if="connectedClients == 1">Drugi gracz niech odpali stronę</button></div> -->
 
-        <div>
+        <div v-if="connectedClients > 1">
+
+
             <p>siemano {{yourplayer.value}} {{yourplayerindex}}</p>
 
             <div v-if="!joined">
@@ -45,123 +49,83 @@
             </ul>
 
 
-            <button @click="start">Rozpocznij grę</button>
+            <h2 v-if="litera">Litera: {{litera.toUpperCase()}}</h2>
 
 
-            <div v-if="gameStarted">
+            <!-- <button @click="start">Rozpocznij grę</button> -->
+
+            <div v-if="players.length">
+                <button @click="losuj2(alphabet,litera)" v-if="litera === ''">Losuj literę</button>
+            </div>
+
+
+            <div v-if="litera">
                 <p>gamestaretd</p>
                 <table>
                     <tr>
+                        <td style="width:80px">
+
+                        </td>
                         <td v-for="elem in guesses">{{elem}}</td>
                     </tr>
                     <tr>
+                        <td style="width:80px">
+
+                        </td>
                         <td v-for="elem in guesses"><input type="text" v-model="dane[elem]"></td>
                     </tr>
                 </table>
 
+                <div v-if="danerazem[0]">
+                    <table v-if="danerazem[0].results">
+                        <tr v-for="row in danerazem">
+
+                            <td style="width:80px">
+                                <b>{{players[row.playerindex]}}</b>
+                            </td>
+
+                            <td v-for="(guess,index) in guesses">
+                                {{row[guess]}}:({{row.results[index]}})
+                            </td>
+
+                            <td>
+
+                            </td>
+
+
+                        </tr>
+                    </table>
+                </div>
+
+
+                <p>Timer:{{timer}}</p>
+
+                <button @click="setTimerEmit" v-if="!applied">setTimerEmit</button> 
+
+
+                <!-- {{dane}} -->
+
+                <!-- {{danerazem}} -->
+
             </div>
 
-            {{dane}}
+
+          
+
+
 
         </div>
 
     </div>
 
 
-
+    <script src="/socket.io/socket.io.js"></script>
 
     <!-- Import Vue and the Composition API -->
     <script src="https://unpkg.com/vue@next"></script>
 
 
-    <script type="module">
-        import losuj from './losuj.js';
-
-        let socket = io();
-
-        socket.on('connect', function () {
-            console.log('connectedClientClient');
-            // socket.emit('connectedClientClient');
-        });
-        socket.on('disconnect', function () {
-            console.log('disconnected');
-        });
-
-        const { ref, reactive, createApp, onMounted } = Vue;
-        createApp({
-
-            setup() {
-
-                let joined = ref(false);
-                let nick = ref('');
-                let yourplayer = ref('');
-                let yourplayerindex = ref(99);
-
-                let players = reactive([]);
-                let guesses = ['country'];
-
-                let currentplayer = '';
-
-                let connectedClients = ref(99);
-
-                let gameStarted = ref(false);
-
-                // let dane = reactive({});
-
-                let dane = reactive({});
-
-
-
-
-
-
-                function addPlayerEmit() {
-                    yourplayer.value = nick;
-
-                    joined.value = true;
-                    socket.emit('addPlayer', nick.value);
-                }
-
-                function start() {
-                    console.log('start');
-                    gameStarted.value = true;
-                }
-
-                onMounted(() => {
-
-                    socket.on('addPlayer', (data) => {
-                        console.log('nasłuchuje addplayer');
-                        players.push(data);
-
-                        yourplayerindex.value = players.indexOf(nick.value);
-                        console.log('yourplayerindex', yourplayerindex);
-                    })
-
-                    socket.on('connectedClients', (data) => {
-                        connectedClients.value = data;
-                    })
-
-
-                })
-
-
-
-                socket.emit('connectedClientClient');
-
-
-                return {
-                    nick, players, addPlayerEmit, yourplayer, joined, connectedClients, start, gameStarted, dane, yourplayerindex, guesses
-                }
-
-
-            }
-
-        }).mount('#app')
-
-
-
-
-    </script>
+   <script src="script.js" type="module"></script>
 </body>
 
 </html>

@@ -23,14 +23,13 @@ io.on('connection', (socket) => {
     })
 
     socket.on('connectedClientClient', () => {
-        console.log('nasłuchuje i emituje po stronie serwera');
-        console.log('clientclient', connectcounter);
-        // socket.emit('connectedClient', connectcounter);
-
         socket.emit('connectedClients', connectcounter);
-
         socket.broadcast.emit('connectedClients', connectcounter);
     });
+
+    socket.on('gameStarted',()=>{
+        socket.broadcast.emit('gameStarted');
+    })
 
     socket.on('disconnect', () => {
         connectcounter -= 1;
@@ -38,12 +37,29 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('connectedClients', connectcounter);
     });
 
+    socket.on('litera', (msg) => {
+        socket.broadcast.emit('litera', msg);
+    });
+
+    socket.on('sendResults', (msg) => {
+        // socket.emit('sendResults', msg);
+        socket.broadcast.emit('sendResults', msg);
+
+    });
+
+    socket.on('setTimer', (msg)=>{
+        console.log('emituje setTimer po stronie serwera');
+        socket.emit('setTimer',msg)
+        socket.broadcast.emit('setTimer', msg)
+
+    })
+
 
 
 });
 
-server.listen(3001, () => {
-    console.log('listening on *:3001');
+server.listen(3002, () => {
+    console.log('listening on *:3002');
 });
 
 

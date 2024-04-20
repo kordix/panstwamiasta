@@ -17,7 +17,7 @@
         }
     </style>
 
-    <script src="/socket.io/socket.io.js"></script>
+   
 
 </head>
 
@@ -142,16 +142,15 @@
 
 
     <!-- Import Vue and the Composition API -->
-    <script src="https://unpkg.com/vue@next"></script>
-
-
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="/socket.io/socket.io.js"></script>
     <script type="module">
         import losuj from './losuj.js';
 
         let socket = io();
 
         socket.on('connect', function () {
-            console.log('connectedClientClient');
+         //   console.log('connectedClientClient');
             // socket.emit('connectedClientClient');
         });
         socket.on('disconnect', function () {
