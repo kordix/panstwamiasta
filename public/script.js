@@ -34,7 +34,7 @@ createApp({
 
         let danesent = ref(0);
 
-        let timer = ref(5);
+        let timer = ref(15);
         let endgame = ref(false);
         let applied = ref(false);
 
