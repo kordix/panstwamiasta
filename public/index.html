@@ -172,7 +172,7 @@
                 let dane = reactive({});
                 let dane2 = reactive({});
                 let pipa = ref('fasfasfds');
-                let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'w', 'z', 'x', 'v', 'sz', 'cz'];
+                let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'w', 'z', 'sz', 'cz'];
                 let litera = ref('');
                 let applied = ref(false);
                 let anotherplayer = ref('');
@@ -263,7 +263,7 @@
 
                                 setTimeout(() => {
                                     calculatePoints();
-                                }, 1500)
+                                }, 2000)
                             }
                         }
 
@@ -328,7 +328,8 @@
                 onMounted(() => {
                     socket.on('litera', (data) => {
                         litera.value = data
-                        alphabet.splice(alphabet.indexOf(data), 1);
+                         alphabet.filter((el) => el != litera.value);
+                        // alphabet.splice(alphabet.indexOf(data), 1);
                     });
 
                     socket.on('setTimer', (data) => {
@@ -393,7 +394,7 @@
 
 
                 return {
-                    player1applied, player2applied, losuj2, nextRoundEmit, refresh, connectedClients, pipa, dane, dane2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer, timer, applied, endgame, guesses, results, results2, nextRound, archive1results, archive2results, archive1dane, archive2dane
+                    alphabet , player1applied, player2applied, losuj2, nextRoundEmit, refresh, connectedClients, pipa, dane, dane2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer, timer, applied, endgame, guesses, results, results2, nextRound, archive1results, archive2results, archive1dane, archive2dane
                 }
             }
 
