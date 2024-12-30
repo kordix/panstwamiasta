@@ -33,7 +33,11 @@
 
         <h1>Państwa miasta</h1>
 
-        <button @click="losuj2(alphabet,litera)" v-if="!litera && yourplayer && anotherplayer">Losuj literę</button>
+        <!-- v-if="!litera && " -->
+        <template v-if="yourplayer && anotherplayer">
+            <span v-if="dane.country || dane2.country"></span>
+            <button v-else @click="losuj2(alphabet,litera)">Losuj literę</button>
+        </template>
 
         <h2 v-if="litera">Litera: {{litera.toUpperCase()}}</h2>
 
@@ -205,8 +209,8 @@
 
 
 
-                    archive1results.push(results);
-                    archive2results.push(results2);
+                    archive1results.push({ ...results });
+                    archive2results.push({ ...results2 });
                     archive1dane.push({ ...dane });
                     archive2dane.push({ ...dane2 });
 
@@ -328,7 +332,7 @@
                 onMounted(() => {
                     socket.on('litera', (data) => {
                         litera.value = data
-                         alphabet.filter((el) => el != litera.value);
+                        alphabet.filter((el) => el != litera.value);
                         // alphabet.splice(alphabet.indexOf(data), 1);
                     });
 
@@ -394,7 +398,7 @@
 
 
                 return {
-                    alphabet , player1applied, player2applied, losuj2, nextRoundEmit, refresh, connectedClients, pipa, dane, dane2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer, timer, applied, endgame, guesses, results, results2, nextRound, archive1results, archive2results, archive1dane, archive2dane
+                    alphabet, player1applied, player2applied, losuj2, nextRoundEmit, refresh, connectedClients, pipa, dane, dane2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer, timer, applied, endgame, guesses, results, results2, nextRound, archive1results, archive2results, archive1dane, archive2dane
                 }
             }
 
