@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Państwa miasta</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -32,6 +32,7 @@
             stronę</button></div>
 
         <h1>Państwa miasta</h1>
+
 
         <!-- v-if="!litera && " -->
         <template v-if="yourplayer && anotherplayer">
@@ -138,6 +139,8 @@
 
             </ul>
 
+            <button @click="sumAll">sumAll</button>
+
         </div>
 
     </div>
@@ -187,9 +190,6 @@
                 let guesses = ['country', 'city', 'item', 'vocation', 'plant', 'animal'];
                 let myInterval;
                 let timerbool = ref(false);
-                let player1applied = ref(false);
-                let player2applied = ref(false);
-
 
 
                 function nextRoundEmit() {
@@ -216,9 +216,6 @@
 
                     resetObject(dane);
                     resetObject(dane2);
-                    player1applied = false;
-                    player2applied = false;
-
 
                     // clearInterval(myInterval);
                     clearAllIntervals();
@@ -241,9 +238,7 @@
                 function applyPlayer() {
                     applied.value = true;
                     setTimer(99);
-                    if (player1applied.value || player2applied.value) {
-                        return;
-                    }
+
                     socket.emit('setTimer');
 
                 }
@@ -326,6 +321,31 @@
                         }
 
                     }
+
+
+                }
+
+                function sumAll() {
+                    let suma = 0;
+                    let suma2 = 0;
+
+
+                    for (let i = 0; i < archive1results.length; i++) {
+                        let dupa = Object.values(archive1results[i])
+                        for (let i = 0; i < dupa.length; i++) {
+                            suma += dupa[i];
+                        }
+                    }
+
+                    for (let i = 0; i < archive1results.length; i++) {
+                        let dupa = Object.values(archive2results[i])
+                        for (let i = 0; i < dupa.length; i++) {
+                            suma2 += dupa[i];
+                        }
+                    }
+                    alert('GRACZ1 - ' + suma);
+                    alert('GRACZ2 - ' + suma2);
+
                 }
 
 
@@ -363,7 +383,6 @@
                         dane.vocation = otrzymanedane.vocation;
                         dane.plant = otrzymanedane.plant;
                         dane.animal = otrzymanedane.animal;
-                        player1applied.value = true;
 
 
                     })
@@ -376,7 +395,6 @@
                         dane2.vocation = otrzymanedane.vocation;
                         dane2.plant = otrzymanedane.plant;
                         dane2.animal = otrzymanedane.animal;
-                        player2applied.value = true;
 
                     })
 
@@ -398,7 +416,7 @@
 
 
                 return {
-                    alphabet, player1applied, player2applied, losuj2, nextRoundEmit, refresh, connectedClients, pipa, dane, dane2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer, timer, applied, endgame, guesses, results, results2, nextRound, archive1results, archive2results, archive1dane, archive2dane
+                    sumAll, alphabet, losuj2, nextRoundEmit, refresh, connectedClients, pipa, dane, dane2, choosePlayer, yourplayer, anotherplayer, losuj, litera, applyPlayer, timer, applied, endgame, guesses, results, results2, nextRound, archive1results, archive2results, archive1dane, archive2dane
                 }
             }
 
